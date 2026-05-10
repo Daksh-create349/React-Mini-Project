@@ -77,7 +77,7 @@ const Dashboard = () => {
           <MdWbSunny className="text-[100px] text-yellow-300 mx-auto mb-8 animate-pulse drop-shadow-[0_0_40px_rgba(253,224,71,0.6)]" />
           <h2 className="text-4xl font-display font-extrabold mb-4 text-white tracking-tight text-shadow-premium">Enter the Atmosphere</h2>
           <p className="text-white/70 text-lg font-medium leading-relaxed max-w-md mx-auto">
-            Search for a global destination above to unlock ultra-premium, real-time meteorological intelligence.
+            Search for any city to see its weather.
           </p>
         </motion.div>
       </div>

@@ -7,6 +7,10 @@ import { useWeather } from '../context/WeatherContext';
 import { motion } from 'framer-motion';
 
 const getTheme = (conditionText, timeOfDay) => {
+  if (timeOfDay === 'default') {
+    return { bg: 'rgba(15,45,107,0.3)', border: 'rgba(59,130,246,0.25)', hover: 'rgba(15,45,107,0.5)', accent: '#3b82f6', accentRgb: '59,130,246' };
+  }
+
   const cond = conditionText?.toLowerCase() || '';
   const isDay = timeOfDay === 'day' || timeOfDay === 'morning';
 
@@ -34,13 +38,10 @@ const getTheme = (conditionText, timeOfDay) => {
 
 // Derive time-of-day from location.localtime string
 function getTimeOfDay(localtime, isDay) {
-  let h;
-  if (!localtime) {
-    h = new Date().getHours();
-  } else {
-    const timePart = localtime.split(' ')[1] || '12:00';
-    h = Number(timePart.split(':')[0]);
-  }
+  if (!localtime) return 'default'; // No city searched yet
+
+  const timePart = localtime.split(' ')[1] || '12:00';
+  const h = Number(timePart.split(':')[0]);
   if (h >= 0  && h < 5)  return 'night';
   if (h >= 5  && h < 7)  return 'dawn';
   if (h >= 7  && h < 10) return 'morning';

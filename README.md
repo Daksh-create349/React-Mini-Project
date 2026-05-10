@@ -12,8 +12,8 @@ The primary objective of this platform is to provide users with a premium aesthe
 
 The visual language of Atmos Weather is built entirely around "Premium Glassmorphism" and contextual environmental awareness. 
 
-### 2.1. Contextual Environmental Awareness
-Rather than forcing the user to select between a strict light mode or dark mode, the application dynamically morphs to reflect the reality of the queried city. If a user in New York (where it is midday) queries Tokyo (where it is midnight), the application interface instantly transitions to a nocturnal theme, complete with celestial star mapping and moonlight ambient glow. 
+### 2.1. Dual-Phase User Experience
+The platform begins with a clean, friendly light-blue landing page designed for immediate visual impact. The page features a centered hero layout with a large animated weather icon, a live data badge, simple headline copy, and three frosted-glass stat preview cards (Wind, Humidity, Pressure). Upon entering the main dashboard, users see a rich static blue theme until they search for a city, at which point the interface dynamically adapts to reflect that city's actual weather and local time.
 
 ### 2.2. Glassmorphism UI
 To ensure that the dynamic backgrounds remain the focal point, all foreground components utilize glassmorphic principles. This is achieved through heavy utilization of CSS `backdrop-filter: blur()`, semi-transparent rgba background colors, and subtle, high-opacity white borders to simulate light reflection on glass edges. 
@@ -42,7 +42,8 @@ The dashboard provides a highly granular view of current atmospheric conditions.
 The application abandons traditional toggles in favor of an algorithmic theming engine. 
 * **Time Parsing:** The engine parses the local time from the API, categorizing it into distinct phases: Night, Dawn, Morning, Day, Dusk, and Evening. 
 * **Visual Synthesis:** It cross-references these time phases with the current weather condition to generate specific background gradients and render contextual SVG assets (e.g., floating rain lines, drifting snow particles, pulsating lightning, or a waxing crescent moon).
-* **System Fallback:** If no city is queried, the engine falls back to reading the user's physical hardware system clock to maintain visual continuity with their immediate physical environment.
+* **System Fallback:** Before a city is queried, the engine intentionally defaults to a static rich blue theme. This keeps the dashboard clean and visually appealing until actual weather data is loaded. Once a city is searched, the theme switches to the time-period and weather-condition matching that city's current data.
+* **Toned Palette:** The morning theme uses a softer, more muted amber-to-sky palette instead of harsh bright yellows, ensuring comfort across all lighting conditions.
 
 ### 3.4. Historical Weather Logs
 To fulfill the requirement for retroactive data analysis, the platform includes a dedicated Historical Logs module. Upon querying a city, the application concurrently fetches the past three days of historical weather data. This telemetry is visualized using a responsive, fluid area chart, allowing users to track temperature trends and average conditions leading up to the current moment.
@@ -84,13 +85,13 @@ The application is structured into highly modular, decoupled React components.
 The master wrapper for the application. It subscribes to the Context API to read the current weather condition and local time. It passes these values to the `getTheme` utility function to generate CSS variables (`--theme-bg`, `--theme-border`, `--theme-accent`). These variables dictate the color of the glass panels and the ambient floating blobs globally.
 
 ### 5.2. Dashboard.jsx
-The primary entry point when a user searches for a city. It orchestrates the rendering of the Hero section (City name, massive temperature display, and HeroWeatherIcon), followed by the injection of the Highlights, Forecasts, and Historical Log components.
+The primary entry point when a user searches for a city. It orchestrates the rendering of the Hero section (City name, massive temperature display, and HeroWeatherIcon), followed by the injection of the Highlights, Forecasts, and Historical Log components. When no city has been searched yet, it shows a simple, friendly prompt: "Search for any city to see its weather."
 
 ### 5.3. WeatherBackground.jsx
 A purely visual, non-interactive component that sits at `z-index: 0`. It takes the time of day and condition strings and returns a mathematically precise linear gradient. It is also responsible for rendering the `Stars`, `ShootingStar`, `Moon`, and `Sun` SVG components based on the parsed time.
 
 ### 5.4. Navbar.jsx
-A fixed-position, z-index 50 navigation bar. It utilizes an internal state for autocomplete suggestions, debouncing user input by 300ms before querying the WeatherAPI search endpoint to prevent rate-limiting. It also handles the routing between the Dashboard, Favorites, and History views.
+A fixed-position, z-index 50 navigation bar. It features the Atmos logo, main navigation links (Dashboard, Favorites, Alerts, History), a debounced autocomplete search bar, and a live clock display on the right. The dark-mode toggle and avatar buttons have been intentionally removed to keep the interface clean and focused. Navigation between views is handled via React Router DOM `NavLink` components with active state styling.
 
 ### 5.5. WeatherHighlights.jsx
 A grid-based component mapping out the granular telemetry of the current weather. It utilizes a custom `CircularProgress` sub-component to draw SVG circles using stroke-dashoffset mathematics to visually represent UV and AQI scales out of their respective maximums.

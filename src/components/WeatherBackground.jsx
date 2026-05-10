@@ -7,13 +7,10 @@ import { motion } from 'framer-motion';
  * Returns: 'night' | 'dawn' | 'morning' | 'day' | 'dusk' | 'evening'
  */
 export function getTimeOfDay(localtime, isDay) {
-  let h;
-  if (!localtime) {
-    h = new Date().getHours();
-  } else {
-    const timePart = localtime.split(' ')[1] || '12:00';
-    h = Number(timePart.split(':')[0]);
-  }
+  if (!localtime) return 'default'; // Static state before search
+
+  const timePart = localtime.split(' ')[1] || '12:00';
+  const h = Number(timePart.split(':')[0]);
 
   if (h >= 0 && h < 5)  return 'night';
   if (h >= 5 && h < 7)  return 'dawn';
@@ -159,6 +156,10 @@ const WeatherBackground = ({ weatherCondition, isDay, localtime, moonPhase }) =>
 
   // ── Sky gradient ──────────────────────────────────────────────────────────
   const gradient = useMemo(() => {
+    if (timeOfDay === 'default') {
+      return 'from-[#1a4a8a] via-[#2563eb] to-[#0e3a70]'; // Light sky blue default
+    }
+
     // Weather overrides first
     if (condition.includes('thunder'))
       return 'from-slate-900 via-purple-950 to-black';
@@ -176,7 +177,7 @@ const WeatherBackground = ({ weatherCondition, isDay, localtime, moonPhase }) =>
       case 'dawn':
         return 'from-[#1a1a2e] via-[#e96c50] to-[#f5a25d]';
       case 'morning':
-        return 'from-[#f7971e] via-[#ffd200] to-[#56ccf2]';
+        return 'from-[#c97b2e] via-[#e8a84a] to-[#5ba3c9]';
       case 'dusk':
         return 'from-[#0f2027] via-[#c94b4b] to-[#f7971e]';
       case 'day':
@@ -196,6 +197,11 @@ const WeatherBackground = ({ weatherCondition, isDay, localtime, moonPhase }) =>
 
   return (
     <div className={`fixed inset-0 z-0 bg-gradient-to-br ${gradient} transition-all duration-[2000ms] pointer-events-none overflow-hidden`}>
+
+      {/* ── Default state (No search yet) ──────────────────────────── */}
+      {timeOfDay === 'default' && (
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-700/20 via-transparent to-transparent opacity-60" />
+      )}
 
       {/* ── Night / Evening ─────────────────────────────────────────── */}
       {isNight && (

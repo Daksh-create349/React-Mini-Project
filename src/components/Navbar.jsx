@@ -248,17 +248,6 @@ const Navbar = () => {
             <div className="flex flex-col items-end mr-2">
               <span className="text-sm font-bold text-white tracking-wide">{formatTime(currentTime)}</span>
             </div>
-            
-            <button 
-              onClick={toggleDarkMode}
-              className="p-2 rounded-full bg-black/20 hover:bg-white/20 border border-white/10 text-white transition-all duration-300 backdrop-blur-sm"
-            >
-              {isDarkMode ? <MdWbSunny size={18} /> : <MdOutlineDarkMode size={18} />}
-            </button>
-            
-            <button className="w-9 h-9 rounded-full bg-black/20 border border-white/20 p-[2px] hover:scale-105 transition-transform duration-300">
-              <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Atmos" alt="Profile" className="w-full h-full object-cover bg-white/10 rounded-full" />
-            </button>
           </div>
         </div>
       </header>
@@ -291,16 +280,6 @@ const Navbar = () => {
                   {item.name}
                 </NavLink>
               ))}
-              <div className="h-px bg-white/10 my-2"></div>
-              <div className="flex items-center justify-between px-4 py-2">
-                <span className="text-white/70 font-medium text-sm">Appearance</span>
-                <button 
-                  onClick={toggleDarkMode}
-                  className="p-2 rounded-full bg-black/20 border border-white/10 text-white transition-all"
-                >
-                  {isDarkMode ? <MdWbSunny size={18} /> : <MdOutlineDarkMode size={18} />}
-                </button>
-              </div>
             </nav>
           </motion.div>
         )}
