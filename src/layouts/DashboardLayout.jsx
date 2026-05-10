@@ -19,7 +19,7 @@ const getTheme = (conditionText, timeOfDay) => {
   if (cond.includes('snow') || cond.includes('ice') || cond.includes('sleet'))
     return { bg: 'rgba(255,255,255,0.1)', border: 'rgba(255,255,255,0.25)', hover: 'rgba(255,255,255,0.18)', accent: '#bae6fd', accentRgb: '186,230,253' };
   if (cond.includes('thunder'))
-    return { bg: 'rgba(88,28,135,0.2)', border: 'rgba(192,132,252,0.3)', hover: 'rgba(88,28,135,0.38)', accent: '#c084fc', accentRgb: '192,132,252' };
+    return { bg: 'rgba(15,15,25,0.5)', border: 'rgba(100,116,139,0.2)', hover: 'rgba(15,15,25,0.65)', accent: '#94a3b8', accentRgb: '148,163,184' };
   if (cond.includes('cloud') || cond.includes('overcast'))
     return isDay
       ? { bg: 'rgba(71,85,105,0.2)', border: 'rgba(148,163,184,0.25)', hover: 'rgba(71,85,105,0.38)', accent: '#94a3b8', accentRgb: '148,163,184' }
@@ -27,11 +27,11 @@ const getTheme = (conditionText, timeOfDay) => {
   if (cond.includes('clear') || cond.includes('sun'))
     return isDay
       ? { bg: 'rgba(251,191,36,0.1)', border: 'rgba(251,191,36,0.25)', hover: 'rgba(251,191,36,0.18)', accent: '#fbbf24', accentRgb: '251,191,36' }
-      : { bg: 'rgba(49,46,129,0.25)', border: 'rgba(129,140,248,0.2)', hover: 'rgba(49,46,129,0.4)', accent: '#818cf8', accentRgb: '129,140,248' };
+      : { bg: 'rgba(180,90,20,0.15)', border: 'rgba(251,146,60,0.2)', hover: 'rgba(180,90,20,0.25)', accent: '#fb923c', accentRgb: '251,146,60' };
 
-  // Night / evening default
+  // Night / evening default — warm slate blue, no purple
   if (timeOfDay === 'night' || timeOfDay === 'evening')
-    return { bg: 'rgba(15,23,42,0.4)', border: 'rgba(129,140,248,0.15)', hover: 'rgba(15,23,42,0.6)', accent: '#818cf8', accentRgb: '129,140,248' };
+    return { bg: 'rgba(15,23,42,0.4)', border: 'rgba(71,85,105,0.2)', hover: 'rgba(15,23,42,0.6)', accent: '#64748b', accentRgb: '100,116,139' };
 
   return { bg: 'rgba(0,0,0,0.1)', border: 'rgba(255,255,255,0.15)', hover: 'rgba(0,0,0,0.2)', accent: '#60a5fa', accentRgb: '96,165,250' };
 };

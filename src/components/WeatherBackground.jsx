@@ -162,7 +162,7 @@ const WeatherBackground = ({ weatherCondition, isDay, localtime, moonPhase }) =>
 
     // Weather condition overrides — always take priority over time-of-day
     if (condition.includes('thunder'))
-      return 'from-slate-900 via-purple-950 to-black';
+      return 'from-[#1a1a2a] via-[#2d2d3d] to-[#111118]';
 
     if (condition.includes('snow') || condition.includes('sleet') || condition.includes('ice'))
       return isDay
