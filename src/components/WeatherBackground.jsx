@@ -160,15 +160,34 @@ const WeatherBackground = ({ weatherCondition, isDay, localtime, moonPhase }) =>
       return 'from-[#1a4a8a] via-[#2563eb] to-[#0e3a70]'; // Light sky blue default
     }
 
-    // Weather overrides first
+    // Weather condition overrides — always take priority over time-of-day
     if (condition.includes('thunder'))
       return 'from-slate-900 via-purple-950 to-black';
-    if (condition.includes('snow') || condition.includes('sleet') || condition.includes('ice'))
-      return timeOfDay === 'night' || timeOfDay === 'evening'
-        ? 'from-slate-800 via-slate-700 to-slate-900'
-        : 'from-slate-300 via-sky-400 to-blue-500';
 
-    // Time-of-day sky
+    if (condition.includes('snow') || condition.includes('sleet') || condition.includes('ice'))
+      return isDay
+        ? 'from-slate-300 via-sky-400 to-blue-500'
+        : 'from-slate-800 via-slate-700 to-slate-900';
+
+    // Mist / fog / haze — silvery grey blend with ambient time tint
+    if (condition.includes('mist') || condition.includes('fog') || condition.includes('haze'))
+      return isDay
+        ? 'from-slate-400 via-slate-500 to-slate-600'
+        : 'from-slate-700 via-slate-800 to-slate-900';
+
+    // Rain / drizzle — dark blue-grey regardless of time
+    if (condition.includes('rain') || condition.includes('drizzle'))
+      return isDay
+        ? 'from-slate-600 via-cyan-900 to-blue-900'
+        : 'from-slate-900 via-blue-950 to-slate-900';
+
+    // Cloudy / overcast — muted grey, slightly warmer during day
+    if (condition.includes('cloud') || condition.includes('overcast'))
+      return isDay
+        ? 'from-slate-400 via-slate-500 to-slate-600'
+        : 'from-slate-700 via-slate-800 to-slate-900';
+
+    // Time-of-day sky (clear conditions)
     switch (timeOfDay) {
       case 'night':
         return 'from-[#020817] via-[#0d1b3e] to-[#0a0f1e]';
@@ -182,10 +201,6 @@ const WeatherBackground = ({ weatherCondition, isDay, localtime, moonPhase }) =>
         return 'from-[#0f2027] via-[#c94b4b] to-[#f7971e]';
       case 'day':
       default:
-        if (condition.includes('cloud') || condition.includes('overcast'))
-          return 'from-slate-500 via-slate-600 to-slate-700';
-        if (condition.includes('rain') || condition.includes('drizzle'))
-          return 'from-slate-700 via-cyan-900 to-blue-900';
         return 'from-sky-400 via-blue-500 to-blue-700';
     }
   }, [condition, timeOfDay]);
