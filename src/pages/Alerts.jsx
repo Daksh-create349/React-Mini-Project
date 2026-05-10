@@ -178,7 +178,8 @@ const Alerts = () => {
   const { weatherData } = useWeather();
   const [selectedAlert, setSelectedAlert] = useState(null);
   const [globalAlerts, setGlobalAlerts] = useState([]);
-  const [loadingGlobal, setLoadingGlobal] = useState(true);
+  const [loadingGlobal, setLoadingGlobal] = useState(false);
+  const [globalLoaded, setGlobalLoaded] = useState(false);
 
   // Official API alerts for current searched location
   const officialLocalAlerts = weatherData?.alerts?.alert || [];
@@ -192,36 +193,30 @@ const Alerts = () => {
   // Merge: official alerts first (they're most authoritative), then condition-based
   const localAlerts = [...officialLocalAlerts, ...conditionAlerts];
 
-  // Global alerts from hotspot cities (official API + condition-based merged)
-  useEffect(() => {
-    const fetch = async () => {
-      setLoadingGlobal(true);
-      try {
-        const results = await Promise.allSettled(
-          GLOBAL_HOTSPOTS.map(city => weatherApi.getWeather(city))
-        );
-        const agg = [];
-        results.forEach(r => {
-          if (r.status !== 'fulfilled') return;
-          const data = r.value;
-          // Official alerts
+  // Global alerts — only fetched when user clicks the button
+  const fetchGlobalAlerts = async () => {
+    setLoadingGlobal(true);
+    setGlobalLoaded(false);
+    try {
+      // Stagger requests to avoid hitting rate limits
+      const agg = [];
+      for (const city of GLOBAL_HOTSPOTS) {
+        try {
+          const data = await weatherApi.getWeather(city);
           (data?.alerts?.alert || []).forEach(a =>
             agg.push({ ...a, locationName: data.location.name, country: data.location.country })
           );
-          // Condition-based alerts
-          generateConditionAlerts(data).forEach(a =>
-            agg.push({ ...a })
-          );
-        });
-        setGlobalAlerts(agg);
-      } catch (e) {
-        console.error('Global alerts fetch failed:', e);
-      } finally {
-        setLoadingGlobal(false);
+          generateConditionAlerts(data).forEach(a => agg.push({ ...a }));
+        } catch (_) { /* skip failed city */ }
       }
-    };
-    fetch();
-  }, []);
+      setGlobalAlerts(agg);
+      setGlobalLoaded(true);
+    } catch (e) {
+      console.error('Global alerts fetch failed:', e);
+    } finally {
+      setLoadingGlobal(false);
+    }
+  };
 
   return (
     <div className="w-full max-w-[1400px] mx-auto space-y-14">
@@ -297,14 +292,32 @@ const Alerts = () => {
               <div className="w-3.5 h-3.5 border-2 border-white/50 border-t-transparent rounded-full animate-spin" />
               Scanning {GLOBAL_HOTSPOTS.length} Cities…
             </div>
-          ) : (
+          ) : globalLoaded ? (
             <div className="text-white/50 text-sm font-bold bg-white/5 px-4 py-2 rounded-full border border-white/10">
               {globalAlerts.length} Advisories Found
             </div>
+          ) : (
+            <button
+              onClick={fetchGlobalAlerts}
+              className="flex items-center gap-2 text-sm font-bold bg-blue-500/20 hover:bg-blue-500/30 text-blue-300 px-5 py-2 rounded-full border border-blue-500/30 transition-all"
+            >
+              <MdPublic size={16} /> Load Global Alerts
+            </button>
           )}
         </div>
 
-        {!loadingGlobal && globalAlerts.length === 0 ? (
+        {!globalLoaded && !loadingGlobal ? (
+          <div className="glass-card p-12 text-center border-white/10 max-w-2xl mx-auto">
+            <MdPublic className="text-4xl text-blue-400 mx-auto mb-4" />
+            <p className="text-white/60 font-medium mb-6">Click "Load Global Alerts" to scan {GLOBAL_HOTSPOTS.length} cities worldwide for active advisories.</p>
+            <button
+              onClick={fetchGlobalAlerts}
+              className="flex items-center gap-2 mx-auto text-sm font-bold bg-blue-500/20 hover:bg-blue-500/30 text-blue-300 px-6 py-3 rounded-full border border-blue-500/30 transition-all"
+            >
+              <MdPublic size={16} /> Load Global Alerts
+            </button>
+          </div>
+        ) : !loadingGlobal && globalAlerts.length === 0 ? (
           <div className="glass-card p-12 text-center border-white/10 max-w-2xl mx-auto">
             <p className="text-white/60 font-medium">All monitored global cities are currently reporting normal conditions.</p>
           </div>
