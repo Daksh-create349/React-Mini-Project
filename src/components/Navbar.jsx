@@ -28,6 +28,8 @@ import { useWeather } from '../context/WeatherContext';
 import { weatherApi } from '../services/weatherApi';
 import { useDebounce } from '../hooks/useDebounce';
 import { useNavigate, NavLink } from 'react-router-dom';
+import { useWeatherAmbience } from '../hooks/useWeatherAmbience';
+import { LuVolume2, LuVolumeX } from 'react-icons/lu';
 
 const navItems = [
   { name: 'Dashboard', path: '/dashboard', icon: <MdDashboard size={20} /> },
@@ -50,7 +52,9 @@ const Navbar = () => {
   const searchRef = useRef(null);
   const navigate = useNavigate();
   
-  const { fetchWeather, recentSearches, loading: weatherLoading, isDarkMode, toggleDarkMode } = useWeather();
+  const { fetchWeather, recentSearches, loading: weatherLoading, isDarkMode, toggleDarkMode, weatherData } = useWeather();
+  const condition = weatherData?.current?.condition?.text || '';
+  const { playing, toggle: toggleSound } = useWeatherAmbience(condition);
 
   useEffect(() => {
     const timer = setInterval(() => setCurrentTime(new Date()), 1000);
@@ -248,6 +252,15 @@ const Navbar = () => {
             <div className="flex flex-col items-end mr-2">
               <span className="text-sm font-bold text-white tracking-wide">{formatTime(currentTime)}</span>
             </div>
+            <button
+              onClick={toggleSound}
+              title={playing ? 'Mute ambience' : 'Play ambience'}
+              className={`text-xl rounded-full w-9 h-9 flex items-center justify-center transition-all duration-200 ${
+                playing ? 'bg-white/20 text-white' : 'text-white/50 hover:text-white hover:bg-white/10'
+              }`}
+            >
+              {playing ? <LuVolume2 size={20} /> : <LuVolumeX size={20} />}
+            </button>
           </div>
         </div>
       </header>

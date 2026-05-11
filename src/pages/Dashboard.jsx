@@ -139,9 +139,11 @@ const Dashboard = () => {
               <span className="text-3xl md:text-4xl font-extrabold text-white capitalize tracking-tight drop-shadow-md text-shadow-premium">
                 {current.condition.text}
               </span>
-              <span className="text-xl font-bold text-white/90 bg-black/20 px-4 py-1.5 rounded-full backdrop-blur-md border border-white/20 shadow-lg">
-                Feels like {Math.round(current.feelslike_c)}°
-              </span>
+              {Math.round(current.feelslike_c) !== Math.round(current.temp_c) && (
+                <span className="text-xl font-bold text-white/90 bg-black/20 px-4 py-1.5 rounded-full backdrop-blur-md border border-white/20 shadow-lg">
+                  Feels like {Math.round(current.feelslike_c)}°
+                </span>
+              )}
             </div>
           </div>
         </div>
